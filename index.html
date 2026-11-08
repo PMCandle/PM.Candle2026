@@ -1,5 +1,44 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>PM Candle</title>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+/* PM Candle 2026 — editorial hero refresh */
+.hero2026{padding-block:24px 10px}
+.hero2026-inner{position:relative;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(320px,.98fr);align-items:center;gap:28px;overflow:hidden;min-height:350px;padding:clamp(22px,4vw,48px);border:1px solid var(--line);border-radius:22px;background:radial-gradient(circle at 78% 18%,rgba(232,180,69,.20),transparent 32%),linear-gradient(120deg,var(--surface) 0%,var(--surface-2) 100%);box-shadow:0 14px 38px rgba(44,33,27,.10)}
+.hero2026-copy{position:relative;z-index:2;max-width:570px}
+.hero2026-kicker{display:inline-flex;align-items:center;gap:8px;color:var(--accent);font-size:12px;font-weight:800;letter-spacing:.13em}
+.hero2026-kicker:before{content:"";width:24px;height:1px;background:var(--gold-2)}
+.hero2026 h2{margin:13px 0 10px;font-family:var(--font-display);font-size:clamp(30px,4.5vw,52px);line-height:1.22;font-weight:800;letter-spacing:-.025em;text-wrap:balance}
+.hero2026 h2 span{color:var(--accent)}
+.hero2026-copy p{max-width:490px;margin:0;color:var(--muted);font-size:clamp(14px,1.5vw,17px);line-height:1.95}
+.hero2026-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.hero2026-actions .btn{min-width:145px;padding:12px 20px}
+.hero2026-note{display:flex;flex-wrap:wrap;gap:14px;margin-top:22px;color:var(--muted);font-size:12px}
+.hero2026-note span{display:inline-flex;align-items:center;gap:6px}
+.hero2026-note b{color:var(--accent);font-size:15px}
+.hero2026-art{position:relative;min-height:270px;display:flex;align-items:center;justify-content:center;isolation:isolate}
+.hero2026-art:before{content:"";position:absolute;width:min(88%,390px);aspect-ratio:1;border-radius:50%;background:rgba(232,180,69,.15);z-index:-1}
+.hero2026-product{position:absolute;overflow:hidden;border:7px solid var(--surface);border-radius:18px;background:var(--surface);box-shadow:0 18px 38px rgba(44,33,27,.18)}
+.hero2026-product img{display:block;width:100%;height:100%;object-fit:cover}
+.hero2026-product.main{width:54%;aspect-ratio:4/5;z-index:2;transform:rotate(-3deg)}
+.hero2026-product.side-a{width:39%;aspect-ratio:4/5;inset-inline-start:4%;top:8%;transform:rotate(8deg)}
+.hero2026-product.side-b{width:39%;aspect-ratio:4/5;inset-inline-end:2%;bottom:1%;transform:rotate(7deg)}
+.hero2026-stamp{position:absolute;z-index:3;inset-inline-end:6%;top:5%;display:grid;place-items:center;width:76px;height:76px;border:1px solid rgba(143,86,48,.3);border-radius:50%;background:var(--surface);color:var(--accent);font-family:var(--font-display);font-size:12px;font-weight:800;text-align:center;line-height:1.35;transform:rotate(10deg)}
+@media(max-width:760px){.hero2026-inner{grid-template-columns:1fr;gap:8px;padding:24px 20px}.hero2026-copy{max-width:none}.hero2026-art{min-height:245px;max-width:470px;width:100%;margin-inline:auto}.hero2026-product.main{width:47%}.hero2026-product.side-a,.hero2026-product.side-b{width:34%}.hero2026-stamp{width:64px;height:64px;font-size:10px}}
+@media(max-width:420px){.hero2026{padding-top:12px}.hero2026-inner{border-radius:16px;padding:21px 16px}.hero2026 h2{font-size:31px}.hero2026-actions{display:grid;grid-template-columns:1fr 1fr}.hero2026-actions .btn{min-width:0;padding:11px 10px}.hero2026-art{min-height:215px}}
+/* Clearer product photography and quieter, more premium surfaces */
+.card{transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 25px rgba(44,33,27,.10)}
+.pic{background:linear-gradient(145deg,var(--surface-2),var(--surface))}
+.pic img{transition:transform .25s ease}
+.card:hover .pic img{transform:scale(1.035)}
+.tile,.rail,.filters{box-shadow:0 4px 18px rgba(44,33,27,.035)}
+@media(prefers-reduced-motion:reduce){.card,.pic img{transition:none}}
+
+</style><title>PM Candle | شموع وتوزيعات وهدايا للمناسبات</title>
+<meta name="description" content="اكتشفي منتجات PM Candle من الشموع والتوزيعات والهدايا للمناسبات. اختاري منتجاتك وارسلي طلبك بسهولة عبر واتساب.">
+<meta name="theme-color" content="#2c211b">
+<meta property="og:title" content="PM Candle | شموع وتوزيعات وهدايا">
+<meta property="og:description" content="تفاصيل صغيرة، بتعمل ذكرى كبيرة. اكتشفي كتالوج PM Candle.">
+<meta property="og:type" content="website">
+</head><body>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <style>
@@ -366,6 +405,31 @@ footer .soc a.social-link span{font-size:10px;font-weight:700}
 </header>
 
 <main>
+
+  <section class="wrap hero2026" aria-label="ברוכים הבאים ל-PM Candle">
+    <div class="hero2026-inner">
+      <div class="hero2026-copy">
+        <span class="hero2026-kicker">PM CANDLE · MADE TO BE REMEMBERED</span>
+        <h2>تفاصيل صغيرة،<br><span>بتعمل ذكرى كبيرة.</span></h2>
+        <p>شموع وتوزيعات وهدايا بتفاصيل متختارة بعناية، علشان كل مناسبة يبقى ليها لمستها الخاصة.</p>
+        <div class="hero2026-actions">
+          <button class="btn gold" type="button" data-act="browse">تسوقي المنتجات</button>
+          <button class="btn line" type="button" data-act="only-new">شوفي الجديد</button>
+        </div>
+        <div class="hero2026-note">
+          <span><b>✦</b> اختيارات متنوعة للمناسبات</span>
+          <span><b>✦</b> الطلب مباشرة عبر واتساب</span>
+        </div>
+      </div>
+      <div class="hero2026-art" aria-label="صور من منتجات PM Candle">
+        <div class="hero2026-product side-a"><img data-hero-product="17" alt="شموع ديكور من كتالوج PM Candle" loading="eager"></div>
+        <div class="hero2026-product main"><img data-hero-product="21" alt="منتج من كتالوج PM Candle" loading="eager"></div>
+        <div class="hero2026-product side-b"><img data-hero-product="19" alt="توزيعات من كتالوج PM Candle" loading="eager"></div>
+        <div class="hero2026-stamp">MADE<br>WITH LOVE</div>
+      </div>
+    </div>
+  </section>
+
   <section class="wrap tiles-wrap" aria-labelledby="tilesH">
     <h2 class="sec" id="tilesH">تسوّق حسب القسم</h2>
     <div class="tiles" id="tiles"></div>
@@ -547,6 +611,11 @@ PRODUCTS.forEach(function(p){
   byId[p.id]=p;
   p._n=norm(p.name+' '+catName(p.cat));
   p._min=Math.min.apply(null,p.v.map(function(v){return v.p}));
+});
+// Reuse original catalogue photography in the homepage hero (no external image dependencies).
+$$('[data-hero-product]').forEach(function(img){
+  var product=byId[+img.dataset.heroProduct];
+  if(product)img.src=product.img;
 });
 function unit(p,vi,sc){return p.v[vi].p+(sc?p.scent:0)}
 function minQty(p){return p.min||10}
@@ -921,6 +990,7 @@ document.addEventListener('click',function(e){
   if(a==='home'){e.preventDefault();setFilter({cat:'all',onlyNew:false,q:'',price:'all'});window.scrollTo(0,0)}
   else if(a==='toggle-theme'){toggleMood()}
   else if(a==='toggle-palette-menu'){togglePaletteMenu()}
+  else if(a==='browse'){setFilter({cat:'all',onlyNew:false,q:'',price:'all'},true)}
   else if(a==='recommend'){recommendProducts()}
   else if(a==='only-new'){setFilter({onlyNew:true,cat:'all',q:'',price:'all'},true)}
   else if(a==='clear-all'){setFilter({q:'',cat:'all',price:'all',onlyNew:false,sort:'catalog'})}
