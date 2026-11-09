@@ -39,9 +39,10 @@
 <meta property="og:description" content="تفاصيل صغيرة، بتعمل ذكرى كبيرة. اكتشفي كتالوج PM Candle.">
 <meta property="og:type" content="website">
 
-<style id="real-work-gallery-css">
-.real-work-section{padding-block:24px 42px}.real-work-heading{display:flex;justify-content:space-between;align-items:end;gap:18px;margin:0 0 20px}.real-work-kicker{display:block;color:var(--accent,#a77a31);font-size:11px;font-weight:800;letter-spacing:2px;margin-bottom:8px}.real-work-heading h2{margin:0 0 8px}.real-work-heading p{margin:0;color:var(--muted,#777);line-height:1.7}.real-work-count{white-space:nowrap;border:1px solid var(--line,#e8e0d6);border-radius:999px;padding:9px 14px;color:var(--muted,#777);font-size:12px}.real-work-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.real-work-item{position:relative;display:block;overflow:hidden;border-radius:18px;background:#f4efe8;min-height:190px;box-shadow:0 8px 24px rgba(40,30,20,.09);isolation:isolate}.real-work-item img{display:block;width:100%;height:100%;min-height:230px;max-height:430px;object-fit:cover;transition:transform .45s ease}.real-work-item:hover img{transform:scale(1.035)}.real-work-zoom{position:absolute;right:13px;bottom:13px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.88);color:#30271f;font-size:22px;box-shadow:0 3px 12px rgba(0,0,0,.14)}.real-work-lightbox[hidden]{display:none}.real-work-lightbox{position:fixed;inset:0;z-index:99999;background:rgba(18,15,12,.94);display:flex;align-items:center;justify-content:center;padding:28px}.real-work-lightbox img{max-width:min(94vw,1200px);max-height:88vh;object-fit:contain;border-radius:8px;box-shadow:0 12px 45px rgba(0,0,0,.4)}.real-work-close{position:absolute;top:16px;right:20px;border:0;border-radius:50%;width:44px;height:44px;font-size:30px;line-height:1;background:#fff;color:#222;cursor:pointer}@media(max-width:760px){.real-work-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.real-work-item{min-height:150px;border-radius:13px}.real-work-item img{min-height:190px;max-height:320px}.real-work-heading{align-items:start;flex-direction:column}.real-work-count{align-self:flex-start}}@media(max-width:390px){.real-work-grid{grid-template-columns:1fr}.real-work-item img{max-height:420px}}
+<style id="pm-real-work-gallery">
+.real-work-gallery{padding:34px 0 54px}.real-work-gallery .gallery-intro{text-align:center;max-width:760px;margin:0 auto 26px}.real-work-gallery .gallery-kicker{display:inline-block;letter-spacing:.16em;font-size:.72rem;color:#9a8060;font-weight:700;margin-bottom:9px}.real-work-gallery h2{margin:0 0 10px;font-size:clamp(1.6rem,3vw,2.35rem);color:var(--ink,#332b25)}.real-work-gallery .gallery-intro p{margin:0;color:var(--muted,#81766d);line-height:1.9}.real-work-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.real-work-item{position:relative;overflow:hidden;border-radius:18px;background:#eee7df;box-shadow:0 8px 28px rgba(54,39,25,.09);aspect-ratio:4/5}.real-work-item img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .45s ease}.real-work-item:hover img{transform:scale(1.045)}.real-work-item:after{content:"PM CANDLE · REAL WORK";position:absolute;left:13px;bottom:12px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.78);color:#66513d;font-size:9px;letter-spacing:.12em;font-weight:700;backdrop-filter:blur(7px)}@media(max-width:760px){.real-work-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.real-work-item{border-radius:13px}.real-work-gallery{padding:26px 0 38px}}@media(max-width:420px){.real-work-grid{gap:8px}.real-work-item{border-radius:10px}}
 </style>
+
 </head><body>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
@@ -405,7 +406,7 @@ footer .soc a.social-link span{font-size:10px;font-weight:700}
     </button>
   </div>
   <nav class="subnav" aria-label="الأقسام"><div class="wrap" id="subnav"></div></nav>
-  <div class="notice">لا يتم تأكيد الأوردر إلا عند وصول إجمالي السلة إلى 30 قطعة أو أكثر · خصم 20% عند طلب 99 قطعة أو أكثر · الأسعار بالجنيه المصري للقطعة</div>
+  <div class="notice">لا يتم تأكيد الأوردر إلا عند وصول إجمالي السلة إلى 30 قطعة أو أكثر · خصم 20% لو الأوردر أكتر من 100 قطعة · الأسعار بالجنيه المصري للقطعة</div>
 </header>
 
 <main>
@@ -467,29 +468,33 @@ footer .soc a.social-link span{font-size:10px;font-weight:700}
 
 
 
-<section class="wrap real-work-section" id="real-work" aria-labelledby="realWorkTitle">
- <div class="real-work-heading"><div><span class="real-work-kicker">PM CANDLE · OUR REAL WORK</span><h2 class="sec" id="realWorkTitle">صورنا على الطبيعة</h2><p>لقطات حقيقية من تنفيذاتنا وطلبات عملائنا — كل قطعة معمولة بحب.</p></div><span class="real-work-count">18 صورة من شغلنا</span></div>
- <div class="real-work-grid"><a class="real-work-item" href="real-work/work-01.webp" data-real-image="real-work/work-01.webp" aria-label="تكبير صورة من شغل PM Candle رقم 1"><img src="real-work/work-01.webp" alt="صورة من شغل PM Candle رقم 1" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
-<a class="real-work-item" href="real-work/work-02.webp" data-real-image="real-work/work-02.webp" aria-label="تكبير صورة من شغل PM Candle رقم 2"><img src="real-work/work-02.webp" alt="صورة من شغل PM Candle رقم 2" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
-<a class="real-work-item" href="real-work/work-03.webp" data-real-image="real-work/work-03.webp" aria-label="تكبير صورة من شغل PM Candle رقم 3"><img src="real-work/work-03.webp" alt="صورة من شغل PM Candle رقم 3" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
-<a class="real-work-item" href="real-work/work-04.webp" data-real-image="real-work/work-04.webp" aria-label="تكبير صورة من شغل PM Candle رقم 4"><img src="real-work/work-04.webp" alt="صورة من شغل PM Candle رقم 4" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
-<a class="real-work-item" href="real-work/work-05.webp" data-real-image="real-work/work-05.webp" aria-label="تكبير صورة من شغل PM Candle رقم 5"><img src="real-work/work-05.webp" alt="صورة من شغل PM Candle رقم 5" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
-<a class="real-work-item" href="real-work/work-06.webp" data-real-image="real-work/work-06.webp" aria-label="تكبير صورة من شغل PM Candle رقم 6"><img src="real-work/work-06.webp" alt="صورة من شغل PM Candle رقم 6" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
-<a class="real-work-item" href="real-work/work-07.webp" data-real-image="real-work/work-07.webp" aria-label="تكبير صورة من شغل PM Candle رقم 7"><img src="real-work/work-07.webp" alt="صورة من شغل PM Candle رقم 7" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
-<a class="real-work-item" href="real-work/work-08.webp" data-real-image="real-work/work-08.webp" aria-label="تكبير صورة من شغل PM Candle رقم 8"><img src="real-work/work-08.webp" alt="صورة من شغل PM Candle رقم 8" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
-<a class="real-work-item" href="real-work/work-09.webp" data-real-image="real-work/work-09.webp" aria-label="تكبير صورة من شغل PM Candle رقم 9"><img src="real-work/work-09.webp" alt="صورة من شغل PM Candle رقم 9" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
-<a class="real-work-item" href="real-work/work-10.webp" data-real-image="real-work/work-10.webp" aria-label="تكبير صورة من شغل PM Candle رقم 10"><img src="real-work/work-10.webp" alt="صورة من شغل PM Candle رقم 10" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
-<a class="real-work-item" href="real-work/work-11.webp" data-real-image="real-work/work-11.webp" aria-label="تكبير صورة من شغل PM Candle رقم 11"><img src="real-work/work-11.webp" alt="صورة من شغل PM Candle رقم 11" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
-<a class="real-work-item" href="real-work/work-12.webp" data-real-image="real-work/work-12.webp" aria-label="تكبير صورة من شغل PM Candle رقم 12"><img src="real-work/work-12.webp" alt="صورة من شغل PM Candle رقم 12" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
-<a class="real-work-item" href="real-work/work-13.webp" data-real-image="real-work/work-13.webp" aria-label="تكبير صورة من شغل PM Candle رقم 13"><img src="real-work/work-13.webp" alt="صورة من شغل PM Candle رقم 13" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
-<a class="real-work-item" href="real-work/work-14.webp" data-real-image="real-work/work-14.webp" aria-label="تكبير صورة من شغل PM Candle رقم 14"><img src="real-work/work-14.webp" alt="صورة من شغل PM Candle رقم 14" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
-<a class="real-work-item" href="real-work/work-15.webp" data-real-image="real-work/work-15.webp" aria-label="تكبير صورة من شغل PM Candle رقم 15"><img src="real-work/work-15.webp" alt="صورة من شغل PM Candle رقم 15" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
-<a class="real-work-item" href="real-work/work-16.webp" data-real-image="real-work/work-16.webp" aria-label="تكبير صورة من شغل PM Candle رقم 16"><img src="real-work/work-16.webp" alt="صورة من شغل PM Candle رقم 16" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
-<a class="real-work-item" href="real-work/work-17.webp" data-real-image="real-work/work-17.webp" aria-label="تكبير صورة من شغل PM Candle رقم 17"><img src="real-work/work-17.webp" alt="صورة من شغل PM Candle رقم 17" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
-<a class="real-work-item" href="real-work/work-18.webp" data-real-image="real-work/work-18.webp" aria-label="تكبير صورة من شغل PM Candle رقم 18"><img src="real-work/work-18.webp" alt="صورة من شغل PM Candle رقم 18" loading="lazy"><span class="real-work-zoom" aria-hidden="true">＋</span></a>
- </div>
-</section>
-<div class="real-work-lightbox" id="realWorkLightbox" role="dialog" aria-modal="true" aria-label="عرض الصورة" hidden><button type="button" class="real-work-close" aria-label="إغلاق">×</button><img src="" alt="صورة مكبرة من شغل PM Candle"></div>
+  <section class="wrap real-work-gallery" id="real-work" aria-labelledby="realWorkTitle">
+    <div class="gallery-intro">
+      <span class="gallery-kicker">PM CANDLE · REAL ORDERS</span>
+      <h2 id="realWorkTitle">صورنا على الطبيعة</h2>
+      <p>لقطات حقيقية من شغلنا وتجهيزات أوردراتكم، بكل تفاصيلها وحبّها.</p>
+    </div>
+    <div class="real-work-grid">
+      <figure class="real-work-item"><img src="assets/real-work/work-01.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+      <figure class="real-work-item"><img src="assets/real-work/work-02.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+      <figure class="real-work-item"><img src="assets/real-work/work-03.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+      <figure class="real-work-item"><img src="assets/real-work/work-04.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+      <figure class="real-work-item"><img src="assets/real-work/work-05.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+      <figure class="real-work-item"><img src="assets/real-work/work-06.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+      <figure class="real-work-item"><img src="assets/real-work/work-07.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+      <figure class="real-work-item"><img src="assets/real-work/work-08.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+      <figure class="real-work-item"><img src="assets/real-work/work-09.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+      <figure class="real-work-item"><img src="assets/real-work/work-10.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+      <figure class="real-work-item"><img src="assets/real-work/work-11.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+      <figure class="real-work-item"><img src="assets/real-work/work-12.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+      <figure class="real-work-item"><img src="assets/real-work/work-13.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+      <figure class="real-work-item"><img src="assets/real-work/work-14.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+      <figure class="real-work-item"><img src="assets/real-work/work-15.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+      <figure class="real-work-item"><img src="assets/real-work/work-16.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+      <figure class="real-work-item"><img src="assets/real-work/work-17.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+      <figure class="real-work-item"><img src="assets/real-work/work-18.jpg" alt="صورة من تنفيذات PM Candle الحقيقية" loading="lazy" decoding="async"></figure>
+    </div>
+  </section>
 
   <section class="wrap recommend-section" aria-labelledby="recommendTitle" id="recommendations">
     <div class="recommend-head">
@@ -564,7 +569,7 @@ footer .soc a.social-link span{font-size:10px;font-weight:700}
     <img data-logo alt="PM Candle">
     <div>
       <p><b>PM Candle</b> · شموع وتوزيعات مناسبات بالجملة</p>
-      <p>الحد الأدنى للصنف 10 قطع · بعض الأصناف لها حد أدنى خاص · لا يتم تأكيد الأوردر إلا عند وصول إجمالي السلة إلى 30 قطعة أو أكثر · خصم 20% عند طلب 99 قطعة أو أكثر</p>
+      <p>الحد الأدنى للصنف 10 قطع · بعض الأصناف لها حد أدنى خاص · لا يتم تأكيد الأوردر إلا عند وصول إجمالي السلة إلى 30 قطعة أو أكثر · خصم 20% على الأوردر لو أكتر من 100 قطعة</p>
     </div>
     <div class="soc" id="soc"></div>
   </div>
@@ -615,7 +620,7 @@ document.documentElement.setAttribute('dir','rtl');
 document.documentElement.setAttribute('lang','ar');
 
 // Set the WhatsApp number (digits with country code, e.g. 201001234567) and the social links here.
-var STORE={whatsapp:'201277604439',facebook:'https://www.facebook.com/profile.php?id=61577439134472',instagram:'https://www.instagram.com/pm.candle2026/',tiktok:'https://www.tiktok.com/@pm.candle',orderMin:30,discountOver:99,discountPct:20};
+var STORE={whatsapp:'201277604439',facebook:'https://www.facebook.com/profile.php?id=61577439134472',instagram:'https://www.instagram.com/pm.candle2026/',tiktok:'https://www.tiktok.com/@pm.candle',orderMin:30,discountOver:100,discountPct:20};
 var CATS=[{id:'bears',name:'دباديب'},{id:'flowers',name:'ورود وتوليب'},{id:'animals',name:'حيوانات وبيبي'},{id:'shapes',name:'بابلز وأشكال'},{id:'jars',name:'جارات وعلب'},{id:'gifts',name:'عطور وهدايا'}];
 var BUCKETS=[
   {id:'all',name:'كل الأسعار'},
@@ -875,7 +880,7 @@ function addCurrent(){
 function stats(){
   var pc=0,t=0;
   cart.forEach(function(i){var p=byId[i.pid];pc+=i.qty;t+=i.qty*unit(p,i.vi,i.sc)});
-  var d=pc>=STORE.discountOver?Math.min(300,Math.round(t*STORE.discountPct/100)):0;
+  var d=pc>STORE.discountOver?Math.round(t*STORE.discountPct/100):0;
   return {pieces:pc,sub:t,disc:d,total:t-d};
 }
 function problems(){
@@ -1089,6 +1094,4 @@ syncPaletteButtons();
 })();
 </script>
 
-
-<script id="real-work-gallery-js">(function(){var box=document.getElementById('realWorkLightbox');if(!box)return;var pic=box.querySelector('img');document.querySelectorAll('[data-real-image]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();pic.src=a.getAttribute('data-real-image');box.hidden=false;document.body.style.overflow='hidden';});});function close(){box.hidden=true;pic.src='';document.body.style.overflow='';}box.querySelector('.real-work-close').addEventListener('click',close);box.addEventListener('click',function(e){if(e.target===box)close();});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!box.hidden)close();});})();</script>
 </body></html>

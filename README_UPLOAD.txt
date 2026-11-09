@@ -1,0 +1,1 @@
+Upload index.html and the complete assets folder to the ROOT of the GitHub Pages repository (main branch). The 18 gallery images are in assets/real-work and their filenames match the HTML references. Do not upload index.html alone.
