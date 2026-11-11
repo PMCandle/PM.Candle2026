@@ -1,0 +1,10 @@
+PM CANDLE — INSTALL ON IPHONE
+
+1. Open https://pmcandle.github.io/PM.Candle2026/ios-app/ in Safari.
+2. Tap the Share icon.
+3. Choose Add to Home Screen.
+4. Confirm Add. Launch PM Candle from the new Home Screen icon.
+
+This is a Progressive Web App (PWA), not an App Store app and not an IPA file.
+The GitHub Pages site must be served over HTTPS. The existing repository has GitHub Pages enabled.
+The app uses the existing portfolio images stored in ../assets/real-work/.
