@@ -1,0 +1,19 @@
+{
+  "name": "PM Candle",
+  "short_name": "PM Candle",
+  "description": "PM Candle - Gifts, candles and favors",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f1e8",
+  "theme_color": "#f7f1e8",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
