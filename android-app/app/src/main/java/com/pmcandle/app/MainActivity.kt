@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.util.Base64
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -50,7 +52,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         window.statusBarColor = android.graphics.Color.rgb(56,39,31)
         window.navigationBarColor = android.graphics.Color.rgb(56,39,31)
-        setContent { PMApp() }
+        setContent { PMRoot() }
     }
 }
 
@@ -83,6 +85,43 @@ private suspend fun loadCatalog(): List<Product> = withContext(Dispatchers.IO) {
         }
     } finally {
         connection.disconnect()
+    }
+}
+
+@Composable
+private fun PMRoot() {
+    var showSplash by remember { mutableStateOf(true) }
+    LaunchedEffect(Unit) { delay(3000); showSplash = false }
+    AnimatedContent(targetState = showSplash, label = "splash") { showing ->
+        if (showing) PMSplash() else PMApp()
+    }
+}
+
+@Composable
+private fun PMSplash() {
+    val anim = rememberInfiniteTransition(label = "logo")
+    val pulse by anim.animateFloat(0.96f, 1.04f, infiniteRepeatable(tween(1600), RepeatMode.Reverse), label = "pulse")
+    val sweep by anim.animateFloat(-260f, 260f, infiniteRepeatable(tween(2200, easing = LinearEasing)), label = "sweep")
+    Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0xFF211713), Color(0xFF513629), Color(0xFF211713)))), contentAlignment = Alignment.Center) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(Modifier.size(270.dp).graphicsLayer { scaleX = pulse; scaleY = pulse }.shadow(26.dp, RoundedCornerShape(140.dp)).clip(RoundedCornerShape(140.dp)).background(Color.White.copy(alpha = 0.14f)).padding(12.dp), contentAlignment = Alignment.Center) {
+                Box(Modifier.fillMaxSize().clip(RoundedCornerShape(130.dp)).background(Brush.linearGradient(listOf(Color(0xFFFFF8E9), Color(0xFFEAD9C8), Color(0xFFFFFDF7)))), contentAlignment = Alignment.Center) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("🕯", fontSize = 42.sp)
+                        Text("P.M", color = Color(0xFF17100E), fontSize = 58.sp, fontWeight = FontWeight.Black)
+                        Text("CANDLE", color = Color(0xFF51283B), fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = 2.sp)
+                        Text("🕯", fontSize = 30.sp)
+                    }
+                }
+                Box(Modifier.fillMaxWidth().height(55.dp).align(Alignment.TopCenter).graphicsLayer { translationX = sweep; rotationZ = -24f }.background(Brush.horizontalGradient(listOf(Color.Transparent, Color.White.copy(alpha = 0.8f), Color.Transparent))))
+            }
+            Spacer(Modifier.height(28.dp))
+            Text("PM Candle", color = Color.White, fontSize = 30.sp, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.height(7.dp))
+            Text("خلي مناسبتك متتنسيش", color = Color(0xFFF0C66D), fontSize = 19.sp, fontWeight = FontWeight.SemiBold)
+            Spacer(Modifier.height(24.dp))
+            Text("MADE WITH LOVE", color = Color(0xFFE8D7C9), fontSize = 10.sp, letterSpacing = 3.sp)
+        }
     }
 }
 
