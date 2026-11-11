@@ -1,4 +1,5 @@
 name: Build PM Candle Android APK
+# Full standalone APK build including latest visitor counter
 
 on:
   workflow_dispatch:
