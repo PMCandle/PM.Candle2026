@@ -357,6 +357,11 @@ private fun CartView(lines: List<CartLine>, total: Int, count: Int, discount: In
                     val line = lines[index]
                     Card(colors = CardDefaults.cardColors(containerColor = Color.White)) {
                         Row(Modifier.fillMaxWidth().padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
+                            if (line.product.image != null) {
+                                Image(line.product.image.asImageBitmap(), line.product.name,
+                                    Modifier.size(64.dp).clip(RoundedCornerShape(10.dp)), contentScale = ContentScale.Crop)
+                                Spacer(Modifier.width(10.dp))
+                            }
                             Column(Modifier.weight(1f)) {
                                 Text(line.product.name, color = Brown, fontWeight = FontWeight.Bold)
                                 Text("${line.product.price} جنيه", color = BrownLight)
