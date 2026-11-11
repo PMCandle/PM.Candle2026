@@ -199,7 +199,7 @@ fun PMApp() {
             when {
                 showCart -> CartView(cart.values.toList(), total, count, discount, finalTotal,
                     onPlus = { p -> tapVibration(); val old = cart[p.id]; cart = cart + (p.id to CartLine(p, (old?.quantity ?: 0) + 10)) },
-                    onMinus = { p -> tapVibration(); val old = cart[p.id]; if (old != null) cart = if (old.quantity <= 10) cart - p.id else cart + (p.id to old.copy(quantity = old.quantity - 10)) },
+                    onMinus = { p -> tapVibration(); val old = cart[p.id]; if (old != null) cart = if (old.quantity > 10) cart + (p.id to old.copy(quantity = old.quantity - 1)) else cart },
                     onCheckout = {
                         val lines = cart.values.joinToString("%0A") { "${it.product.name} × ${it.quantity} = ${it.product.price * it.quantity} جنيه" }
                         val message = "طلب جديد من تطبيق PM Candle%0A$lines%0Aالإجمالي قبل الخصم: $total جنيه%0Aالخصم: $discount جنيه%0Aالإجمالي النهائي: $finalTotal جنيه"
@@ -334,7 +334,7 @@ private fun CartView(lines: List<CartLine>, total: Int, count: Int, discount: In
                                 Text(line.product.name, color = Brown, fontWeight = FontWeight.Bold)
                                 Text("${line.product.price} جنيه", color = BrownLight)
                             }
-                            TextButton(onClick = { onMinus(line.product) }) { Text("−10") }
+                            TextButton(onClick = { onMinus(line.product) }, enabled = line.quantity > 10) { Text("−1") }
                             Text(line.quantity.toString(), color = Brown, fontWeight = FontWeight.Bold)
                             TextButton(onClick = { onPlus(line.product) }) { Text("+10") }
                         }
