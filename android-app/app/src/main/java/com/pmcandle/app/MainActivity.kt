@@ -1,5 +1,6 @@
 package com.pmcandle.app
 
+import android.Manifest
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -7,6 +8,13 @@ import android.os.Bundle
 import android.content.Context
 import android.util.Base64
 import android.view.HapticFeedbackConstants
+import android.os.Build
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import java.util.concurrent.TimeUnit
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
@@ -64,7 +72,42 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         window.statusBarColor = android.graphics.Color.rgb(56,39,31)
         window.navigationBarColor = android.graphics.Color.rgb(56,39,31)
+        PMNotifications.createChannel(this)
+        schedulePMReminders()
+        if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 9001)
+        }
         setContent { PMRoot() }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (Build.VERSION.SDK_INT < 33 || checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            val notification = NotificationCompat.Builder(this, "pm_candle_reminders")
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentTitle("PM Candle شغال")
+                .setContentText("تطبيق PM Candle مفتوح وجاهز لطلباتك 🕯️")
+                .setOngoing(true)
+                .setOnlyAlertOnce(true)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .build()
+            runCatching { NotificationManagerCompat.from(this).notify(1001, notification) }
+        }
+    }
+
+    override fun onStop() {
+        NotificationManagerCompat.from(this).cancel(1001)
+        super.onStop()
+    }
+
+    private fun schedulePMReminders() {
+        val work = WorkManager.getInstance(this)
+        work.enqueueUniquePeriodicWork("pm_cart_reminder", ExistingPeriodicWorkPolicy.UPDATE,
+            PeriodicWorkRequestBuilder<CartReminderWorker>(12, TimeUnit.HOURS).build())
+        work.enqueueUniquePeriodicWork("pm_new_catalog_reminder", ExistingPeriodicWorkPolicy.UPDATE,
+            PeriodicWorkRequestBuilder<NewCatalogWorker>(12, TimeUnit.HOURS).build())
+        work.enqueueUniquePeriodicWork("pm_discount_reminder", ExistingPeriodicWorkPolicy.UPDATE,
+            PeriodicWorkRequestBuilder<DiscountReminderWorker>(24, TimeUnit.HOURS).build())
     }
 }
 
@@ -150,6 +193,13 @@ fun PMApp() {
     var search by remember { mutableStateOf("") }
     var selected by remember { mutableStateOf<Product?>(null) }
     var cart by remember { mutableStateOf<Map<Int, CartLine>>(emptyMap()) }
+    LaunchedEffect(cart) {
+        val saved = JSONArray()
+        cart.values.forEach { line ->
+            saved.put(org.json.JSONObject().put("id", line.product.id).put("quantity", line.quantity))
+        }
+        context.getSharedPreferences("pm_cart_state", Context.MODE_PRIVATE).edit().putString("items", saved.toString()).apply()
+    }
     var showCart by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableStateOf("home") }
     var themeIndex by remember { mutableIntStateOf(0) }
