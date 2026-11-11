@@ -24,6 +24,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -31,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -137,6 +141,7 @@ fun PMApp() {
     var selected by remember { mutableStateOf<Product?>(null) }
     var cart by remember { mutableStateOf<Map<Int, CartLine>>(emptyMap()) }
     var showCart by remember { mutableStateOf(false) }
+    var selectedTab by remember { mutableStateOf("home") }
 
     LaunchedEffect(Unit) {
         runCatching { loadCatalog() }
@@ -165,8 +170,11 @@ fun PMApp() {
             },
             bottomBar = {
                 NavigationBar(containerColor = Color.White) {
-                    NavigationBarItem(selected = !showCart, onClick = { showCart = false; selected = null }, icon = { Text("⌂", fontSize = 22.sp) }, label = { Text("الرئيسية") })
-                    NavigationBarItem(selected = showCart, onClick = { showCart = true; selected = null }, icon = { Text("🛍", fontSize = 18.sp) }, label = { Text("السلة ($count)") })
+                    NavigationBarItem(selected = selectedTab == "home", onClick = { selectedTab = "home"; showCart = false; selected = null }, icon = { Text("⌂", fontSize = 21.sp) }, label = { Text("الرئيسية") })
+                    NavigationBarItem(selected = selectedTab == "products", onClick = { selectedTab = "products"; showCart = false; selected = null }, icon = { Text("✦", fontSize = 19.sp) }, label = { Text("المنتجات") })
+                    NavigationBarItem(selected = selectedTab == "gallery", onClick = { selectedTab = "gallery"; showCart = false; selected = null }, icon = { Text("▦", fontSize = 20.sp) }, label = { Text("شغلنا") })
+                    NavigationBarItem(selected = selectedTab == "contact", onClick = { selectedTab = "contact"; showCart = false; selected = null }, icon = { Text("♡", fontSize = 20.sp) }, label = { Text("تواصل") })
+                    NavigationBarItem(selected = selectedTab == "cart", onClick = { selectedTab = "cart"; showCart = true; selected = null }, icon = { Text("🛍", fontSize = 17.sp) }, label = { Text("السلة ($count)") })
                 }
             }
         ) { padding ->
@@ -180,6 +188,8 @@ fun PMApp() {
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$WhatsApp?text=" + Uri.encode(message)))
                         context.startActivity(intent)
                     }, modifier = Modifier.padding(padding))
+                selectedTab == "gallery" && !showCart -> GalleryScreen(Modifier.padding(padding))
+                selectedTab == "contact" && !showCart -> ContactScreen(Modifier.padding(padding))
                 selected != null -> ProductDetails(selected!!, onBack = { selected = null }, onAdd = {
                     val p = selected!!
                     val old = cart[p.id]
@@ -238,6 +248,35 @@ fun PMApp() {
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun GalleryScreen(modifier: Modifier = Modifier) {
+    val urls = (1..18).map { "https://raw.githubusercontent.com/PMCandle/PM.Candle2026/main/assets/real-work/work-%02d.jpg".format(it) }
+    Column(modifier.fillMaxSize().padding(14.dp)) {
+        Text("من شغلنا على الطبيعة", color=Brown, fontSize=22.sp, fontWeight=FontWeight.Bold)
+        Text("تفاصيل معمولة بحب علشان مناسبتك تبقى مميزة", color=BrownLight, fontSize=13.sp)
+        Spacer(Modifier.height(12.dp))
+        LazyVerticalGrid(columns=GridCells.Fixed(2), contentPadding=PaddingValues(bottom=20.dp), horizontalArrangement=Arrangement.spacedBy(10.dp), verticalArrangement=Arrangement.spacedBy(10.dp)) {
+            items(urls) { url ->
+                AsyncImage(model=url, contentDescription="PM Candle real work", modifier=Modifier.fillMaxWidth().height(170.dp).clip(RoundedCornerShape(14.dp)), contentScale=ContentScale.Crop)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ContactScreen(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    Column(modifier.fillMaxSize().padding(22.dp), horizontalAlignment=Alignment.CenterHorizontally, verticalArrangement=Arrangement.Center) {
+        Text("خلي مناسبتك متتنسيش", color=Brown, fontSize=24.sp, fontWeight=FontWeight.Bold)
+        Text("شموع وتوزيعات وهدايا معمولة بحب", color=BrownLight, fontSize=14.sp)
+        Spacer(Modifier.height(22.dp))
+        Button(onClick={ context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/201277604439"))) }, modifier=Modifier.fillMaxWidth()) { Text("اطلبي عبر واتساب") }
+        Spacer(Modifier.height(10.dp))
+        OutlinedButton(onClick={ context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/pm.candle2026/"))) }, modifier=Modifier.fillMaxWidth()) { Text("تابعينا على Instagram") }
+        OutlinedButton(onClick={ context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://pmcandle.github.io/PM.Candle2026/"))) }, modifier=Modifier.fillMaxWidth()) { Text("زيارة الموقع") }
     }
 }
 
