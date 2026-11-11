@@ -6,6 +6,10 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.content.Context
+import android.media.AudioManager
+import android.media.ToneGenerator
+import android.os.Handler
+import android.os.Looper
 import android.util.Base64
 import android.view.HapticFeedbackConstants
 import android.os.Build
@@ -38,6 +42,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -52,6 +57,23 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import java.net.HttpURLConnection
 import java.net.URL
+
+private fun playClickTone(context: Context) {
+    runCatching {
+        val tone = ToneGenerator(AudioManager.STREAM_SYSTEM, 35)
+        tone.startTone(ToneGenerator.TONE_PROP_BEEP, 75)
+        Handler(Looper.getMainLooper()).postDelayed({ tone.release() }, 120)
+    }
+}
+
+@Composable
+private fun AnimatedTabIcon(symbol: String, selected: Boolean) {
+    val scale by animateFloatAsState(if (selected) 1.16f else 1f, label = "tab_scale")
+    val tint = if (selected) Color(0xFF9B633D) else Color(0xFF8C817A)
+    Box(Modifier.graphicsLayer { scaleX = scale; scaleY = scale }.clip(RoundedCornerShape(12.dp)).background(if (selected) Color(0xFFF4E4D4) else Color.Transparent).padding(horizontal = 9.dp, vertical = 3.dp), contentAlignment = Alignment.Center) {
+        Text(symbol, color = tint, fontSize = 20.sp, fontWeight = if (selected) FontWeight.Black else FontWeight.Normal)
+    }
+}
 
 private val Cream = Color(0xFFF8F1EA)
 private val Brown = Color(0xFF38271F)
@@ -238,13 +260,13 @@ fun PMApp() {
                 }
             },
             bottomBar = {
-                NavigationBar(containerColor = Color.White) {
-                    NavigationBarItem(selected = selectedTab == "home", onClick = { selectedTab = "home"; showCart = false; selected = null }, icon = { Text("⌂", fontSize = 21.sp) }, label = { Text("الرئيسية") })
-                    NavigationBarItem(selected = selectedTab == "products", onClick = { selectedTab = "products"; showCart = false; selected = null }, icon = { Text("✦", fontSize = 19.sp) }, label = { Text("المنتجات") })
-                    NavigationBarItem(selected = selectedTab == "gallery", onClick = { selectedTab = "gallery"; showCart = false; selected = null }, icon = { Text("▦", fontSize = 20.sp) }, label = { Text("شغلنا") })
-                    NavigationBarItem(selected = selectedTab == "contact", onClick = { selectedTab = "contact"; showCart = false; selected = null }, icon = { Text("☎", fontSize = 20.sp) }, label = { Text("تواصل") })
-                    NavigationBarItem(selected = selectedTab == "about", onClick = { selectedTab = "about"; showCart = false; selected = null }, icon = { AboutLogoIcon(selected = selectedTab == "about") }, label = { Text("مين PM؟") })
-                    NavigationBarItem(selected = selectedTab == "cart", onClick = { selectedTab = "cart"; showCart = true; selected = null }, icon = { Text("🛍", fontSize = 17.sp) }, label = { Text("السلة ($count)") })
+                NavigationBar(containerColor = Color.White, contentColor = Brown) {
+                    NavigationBarItem(selected = selectedTab == "home", onClick = { tapVibration(); playClickTone(context); selectedTab = "home"; showCart = false; selected = null }, icon = { AnimatedTabIcon("⌂", selectedTab == "home") }, label = { Text("الرئيسية") }, colors = NavigationBarItemDefaults.colors(selectedIconColor = Color(0xFF9B633D), indicatorColor = Color(0xFFF4E4D4), selectedTextColor = Color(0xFF9B633D), unselectedTextColor = BrownLight))
+                    NavigationBarItem(selected = selectedTab == "products", onClick = { tapVibration(); playClickTone(context); selectedTab = "products"; showCart = false; selected = null }, icon = { AnimatedTabIcon("✦", selectedTab == "products") }, label = { Text("المنتجات") }, colors = NavigationBarItemDefaults.colors(selectedIconColor = Color(0xFF9B633D), indicatorColor = Color(0xFFF4E4D4), selectedTextColor = Color(0xFF9B633D), unselectedTextColor = BrownLight))
+                    NavigationBarItem(selected = selectedTab == "gallery", onClick = { tapVibration(); playClickTone(context); selectedTab = "gallery"; showCart = false; selected = null }, icon = { AnimatedTabIcon("▦", selectedTab == "gallery") }, label = { Text("شغلنا") }, colors = NavigationBarItemDefaults.colors(selectedIconColor = Color(0xFF9B633D), indicatorColor = Color(0xFFF4E4D4), selectedTextColor = Color(0xFF9B633D), unselectedTextColor = BrownLight))
+                    NavigationBarItem(selected = selectedTab == "contact", onClick = { tapVibration(); playClickTone(context); selectedTab = "contact"; showCart = false; selected = null }, icon = { AnimatedTabIcon("☎", selectedTab == "contact") }, label = { Text("تواصل") }, colors = NavigationBarItemDefaults.colors(selectedIconColor = Color(0xFF9B633D), indicatorColor = Color(0xFFF4E4D4), selectedTextColor = Color(0xFF9B633D), unselectedTextColor = BrownLight))
+                    NavigationBarItem(selected = selectedTab == "about", onClick = { tapVibration(); playClickTone(context); selectedTab = "about"; showCart = false; selected = null }, icon = { AboutLogoIcon(selected = selectedTab == "about") }, label = { Text("مين PM؟") }, colors = NavigationBarItemDefaults.colors(selectedIconColor = Color(0xFF9B633D), indicatorColor = Color(0xFFF4E4D4), selectedTextColor = Color(0xFF9B633D), unselectedTextColor = BrownLight))
+                    NavigationBarItem(selected = selectedTab == "cart", onClick = { tapVibration(); playClickTone(context); selectedTab = "cart"; showCart = true; selected = null }, icon = { AnimatedTabIcon("🛍", selectedTab == "cart") }, label = { Text("السلة ($count)") }, colors = NavigationBarItemDefaults.colors(selectedIconColor = Color(0xFF9B633D), indicatorColor = Color(0xFFF4E4D4), selectedTextColor = Color(0xFF9B633D), unselectedTextColor = BrownLight))
                 }
             }
         ) { padding ->
@@ -392,6 +414,8 @@ private fun AboutScreen(themeIndex: Int, onThemeChange: (Int) -> Unit, modifier:
     val palette = palettes[themeIndex]
     Column(modifier.fillMaxSize().background(palette[0]).padding(22.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Text("مين PM Candle؟", color = palette[1], fontSize = 25.sp, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(12.dp))
+        Image(painter = painterResource(R.drawable.pm_candle_logo), contentDescription = "شعار PM Candle", modifier = Modifier.size(190.dp))
         Spacer(Modifier.height(18.dp))
         Text("احنا براند توزيعات شموع مصري تأسس سنة 2022، شاركنا في فرحة أكتر من 10,000 عميل وخلّينا مناسباتهم فيها ذكرى جميلة بأكثر من 100 شكل من توزيعاتنا، معمولة بكل اهتمام وحب علشان دايمًا نفرحكم ونشرّفكم في كل مناسباتكم. تابعونا دايمًا علشان هتلاقوا في كل مرة بتزورونا أشكال جديدة لأول مرة بتكون في مصر بأيدي مصرية خالصة.", color = palette[1], fontSize = 16.sp, lineHeight = 27.sp)
         Spacer(Modifier.height(24.dp))
