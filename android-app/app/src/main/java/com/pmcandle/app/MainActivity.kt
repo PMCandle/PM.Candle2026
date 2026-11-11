@@ -154,7 +154,7 @@ fun PMApp() {
     var selectedTab by remember { mutableStateOf("home") }
     val ratingPrefs = remember { context.getSharedPreferences("pm_ratings", Context.MODE_PRIVATE) }
     var ratings by remember { mutableStateOf<Map<Int, Int>>(emptyMap()) }
-    LaunchedEffect(Unit) { ratings = products.associate { it.id to ratingPrefs.getInt(it.id.toString(), 0) }.filterValues { it > 0 } }
+    LaunchedEffect(products) { ratings = products.associate { it.id to ratingPrefs.getInt(it.id.toString(), 0) }.filterValues { it > 0 } }
     fun setRating(id: Int, value: Int) { ratingPrefs.edit().putInt(id.toString(), value).apply(); ratings = ratings + (id to value) }
 
     LaunchedEffect(Unit) {
