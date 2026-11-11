@@ -152,6 +152,7 @@ fun PMApp() {
     var cart by remember { mutableStateOf<Map<Int, CartLine>>(emptyMap()) }
     var showCart by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableStateOf("home") }
+    var themeIndex by remember { mutableIntStateOf(0) }
     val ratingPrefs = remember { context.getSharedPreferences("pm_ratings", Context.MODE_PRIVATE) }
     var ratings by remember { mutableStateOf<Map<Int, Int>>(emptyMap()) }
     LaunchedEffect(products) { ratings = products.associate { it.id to ratingPrefs.getInt(it.id.toString(), 0) }.filterValues { it > 0 } }
@@ -191,7 +192,8 @@ fun PMApp() {
                     NavigationBarItem(selected = selectedTab == "home", onClick = { selectedTab = "home"; showCart = false; selected = null }, icon = { Text("⌂", fontSize = 21.sp) }, label = { Text("الرئيسية") })
                     NavigationBarItem(selected = selectedTab == "products", onClick = { selectedTab = "products"; showCart = false; selected = null }, icon = { Text("✦", fontSize = 19.sp) }, label = { Text("المنتجات") })
                     NavigationBarItem(selected = selectedTab == "gallery", onClick = { selectedTab = "gallery"; showCart = false; selected = null }, icon = { Text("▦", fontSize = 20.sp) }, label = { Text("شغلنا") })
-                    NavigationBarItem(selected = selectedTab == "contact", onClick = { selectedTab = "contact"; showCart = false; selected = null }, icon = { Text("♡", fontSize = 20.sp) }, label = { Text("تواصل") })
+                    NavigationBarItem(selected = selectedTab == "contact", onClick = { selectedTab = "contact"; showCart = false; selected = null }, icon = { Text("☎", fontSize = 20.sp) }, label = { Text("تواصل") })
+                    NavigationBarItem(selected = selectedTab == "about", onClick = { selectedTab = "about"; showCart = false; selected = null }, icon = { Text("P.M", fontSize = 12.sp, fontWeight = FontWeight.Bold) }, label = { Text("مين PM؟") })
                     NavigationBarItem(selected = selectedTab == "cart", onClick = { selectedTab = "cart"; showCart = true; selected = null }, icon = { Text("🛍", fontSize = 17.sp) }, label = { Text("السلة ($count)") })
                 }
             }
@@ -208,6 +210,7 @@ fun PMApp() {
                     }, modifier = Modifier.padding(padding))
                 selectedTab == "gallery" && !showCart -> GalleryScreen(Modifier.padding(padding))
                 selectedTab == "contact" && !showCart -> ContactScreen(Modifier.padding(padding))
+                selectedTab == "about" && !showCart -> AboutScreen(themeIndex = themeIndex, onThemeChange = { themeIndex = it }, modifier = Modifier.padding(padding))
                 selected != null -> ProductDetails(selected!!, rating = ratings[selected!!.id] ?: 0, onRate = { setRating(selected!!.id, it) }, onBack = { selected = null }, onAdd = {
                     tapVibration()
                     val p = selected!!
@@ -269,6 +272,30 @@ fun PMApp() {
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+
+@Composable
+private fun AboutScreen(themeIndex: Int, onThemeChange: (Int) -> Unit, modifier: Modifier = Modifier) {
+    val palettes = listOf(
+        listOf(Color(0xFFF8F1EA), Color(0xFF38271F), Color(0xFFE8B445)),
+        listOf(Color(0xFFEAF3EE), Color(0xFF285447), Color(0xFFB7CDBE)),
+        listOf(Color(0xFFF5EAF0), Color(0xFF653B52), Color(0xFFD9A9BE))
+    )
+    val palette = palettes[themeIndex]
+    Column(modifier.fillMaxSize().background(palette[0]).padding(22.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("مين PM Candle؟", color = palette[1], fontSize = 25.sp, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(18.dp))
+        Text("احنا براند توزيعات شموع مصري تأسس سنة 2022، شاركنا في فرحة أكتر من 10,000 عميل وخلّينا مناسباتهم فيها ذكرى جميلة بأكثر من 100 شكل من توزيعاتنا، معمولة بكل اهتمام وحب علشان دايمًا نفرحكم ونشرّفكم في كل مناسباتكم. تابعونا دايمًا علشان هتلاقوا في كل مرة بتزورونا أشكال جديدة لأول مرة بتكون في مصر بأيدي مصرية خالصة.", color = palette[1], fontSize = 16.sp, lineHeight = 27.sp)
+        Spacer(Modifier.height(24.dp))
+        Text("اختاري شكل التطبيق", color = palette[1], fontWeight = FontWeight.Bold)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(top = 10.dp)) {
+            listOf("كريمي", "أخضر", "وردي").forEachIndexed { index, label ->
+                FilterChip(selected = themeIndex == index, onClick = { onThemeChange(index) }, label = { Text(label) },
+                    colors = FilterChipDefaults.filterChipColors(selectedContainerColor = palette[2], selectedLabelColor = palette[1]))
             }
         }
     }
