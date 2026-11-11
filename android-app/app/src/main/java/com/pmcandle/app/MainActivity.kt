@@ -84,7 +84,7 @@ class MainActivity : ComponentActivity() {
         super.onStart()
         if (Build.VERSION.SDK_INT < 33 || checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
             val notification = NotificationCompat.Builder(this, "pm_candle_reminders")
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setSmallIcon(R.drawable.pm_candle_status)
                 .setContentTitle("PM Candle شغال")
                 .setContentText("تطبيق PM Candle مفتوح وجاهز لطلباتك 🕯️")
                 .setOngoing(true)
