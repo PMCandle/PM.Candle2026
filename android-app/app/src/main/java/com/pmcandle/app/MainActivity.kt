@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
+import android.view.HapticFeedbackConstants
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
@@ -30,6 +31,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -134,6 +136,8 @@ private fun PMSplash() {
 @Composable
 fun PMApp() {
     val context = LocalContext.current
+    val hapticView = LocalView.current
+    val tapVibration = { hapticView.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK) }
     var products by remember { mutableStateOf<List<Product>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
     var loadError by remember { mutableStateOf<String?>(null) }
@@ -181,8 +185,8 @@ fun PMApp() {
         ) { padding ->
             when {
                 showCart -> CartView(cart.values.toList(), total,
-                    onPlus = { p -> val old = cart[p.id]; cart = cart + (p.id to CartLine(p, (old?.quantity ?: 0) + 1)) },
-                    onMinus = { p -> val old = cart[p.id]; if (old != null) cart = if (old.quantity <= 1) cart - p.id else cart + (p.id to old.copy(quantity = old.quantity - 1)) },
+                    onPlus = { p -> tapVibration(); val old = cart[p.id]; cart = cart + (p.id to CartLine(p, (old?.quantity ?: 0) + 1)) },
+                    onMinus = { p -> tapVibration(); val old = cart[p.id]; if (old != null) cart = if (old.quantity <= 1) cart - p.id else cart + (p.id to old.copy(quantity = old.quantity - 1)) },
                     onCheckout = {
                         val lines = cart.values.joinToString("%0A") { "${it.product.name} × ${it.quantity} = ${it.product.price * it.quantity} جنيه" }
                         val message = "طلب جديد من تطبيق PM Candle%0A$lines%0Aالإجمالي: $total جنيه"
@@ -192,6 +196,7 @@ fun PMApp() {
                 selectedTab == "gallery" && !showCart -> GalleryScreen(Modifier.padding(padding))
                 selectedTab == "contact" && !showCart -> ContactScreen(Modifier.padding(padding))
                 selected != null -> ProductDetails(selected!!, onBack = { selected = null }, onAdd = {
+                    tapVibration()
                     val p = selected!!
                     val old = cart[p.id]
                     cart = cart + (p.id to CartLine(p, (old?.quantity ?: 0) + 1))
@@ -237,6 +242,7 @@ fun PMApp() {
                                             Text("${product.price} جنيه", color = BrownLight, fontWeight = FontWeight.Bold, fontSize = 15.sp)
                                             Spacer(Modifier.height(6.dp))
                                             Button(onClick = {
+                                                tapVibration()
                                                 val old = cart[product.id]
                                                 cart = cart + (product.id to CartLine(product, (old?.quantity ?: 0) + 1))
                                             }, modifier = Modifier.fillMaxWidth(), contentPadding = PaddingValues(vertical = 7.dp)) { Text("أضيفي للسلة", fontSize = 12.sp) }
