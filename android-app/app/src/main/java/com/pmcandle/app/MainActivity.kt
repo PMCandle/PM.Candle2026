@@ -243,7 +243,7 @@ fun PMApp() {
                     NavigationBarItem(selected = selectedTab == "products", onClick = { selectedTab = "products"; showCart = false; selected = null }, icon = { Text("✦", fontSize = 19.sp) }, label = { Text("المنتجات") })
                     NavigationBarItem(selected = selectedTab == "gallery", onClick = { selectedTab = "gallery"; showCart = false; selected = null }, icon = { Text("▦", fontSize = 20.sp) }, label = { Text("شغلنا") })
                     NavigationBarItem(selected = selectedTab == "contact", onClick = { selectedTab = "contact"; showCart = false; selected = null }, icon = { Text("☎", fontSize = 20.sp) }, label = { Text("تواصل") })
-                    NavigationBarItem(selected = selectedTab == "about", onClick = { selectedTab = "about"; showCart = false; selected = null }, icon = { Text("P.M", fontSize = 12.sp, fontWeight = FontWeight.Bold) }, label = { Text("مين PM؟") })
+                    NavigationBarItem(selected = selectedTab == "about", onClick = { selectedTab = "about"; showCart = false; selected = null }, icon = { AboutLogoIcon(selected = selectedTab == "about") }, label = { Text("مين PM؟") })
                     NavigationBarItem(selected = selectedTab == "cart", onClick = { selectedTab = "cart"; showCart = true; selected = null }, icon = { Text("🛍", fontSize = 17.sp) }, label = { Text("السلة ($count)") })
                 }
             }
@@ -327,6 +327,60 @@ fun PMApp() {
     }
 }
 
+
+@Composable
+private fun AboutLogoIcon(selected: Boolean) {
+    val transition = rememberInfiniteTransition(label = "about_logo_glass")
+    val sweep by transition.animateFloat(
+        initialValue = -1.4f,
+        targetValue = 1.4f,
+        animationSpec = infiniteRepeatable(animation = tween(2100, easing = LinearEasing), repeatMode = RepeatMode.Restart),
+        label = "glass_sweep"
+    )
+    val pulse by transition.animateFloat(
+        initialValue = 0.97f,
+        targetValue = 1.03f,
+        animationSpec = infiniteRepeatable(animation = tween(1500, easing = FastOutSlowInEasing), repeatMode = RepeatMode.Reverse),
+        label = "logo_pulse"
+    )
+    Box(
+        Modifier.size(if (selected) 46.dp else 42.dp).graphicsLayer {
+            scaleX = pulse
+            scaleY = pulse
+        }.shadow(if (selected) 8.dp else 3.dp, RoundedCornerShape(50))
+            .clip(RoundedCornerShape(50))
+            .background(
+                Brush.linearGradient(
+                    listOf(Color(0xFFFFFDF5), Color(0xFFE8D8C4), Color(0xFFFFF8EA), Color(0xFFD9C7B3))
+                )
+            )
+            .padding(3.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            Modifier.fillMaxSize().clip(RoundedCornerShape(50))
+                .background(Brush.linearGradient(listOf(Color(0xFFFDF7EA), Color(0xFFE8D8C4), Color(0xFFFFFCF5))))
+                .padding(2.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Box(Modifier.fillMaxSize().clip(RoundedCornerShape(50)).background(Color.Transparent)) {
+                Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("♨", color = Color(0xFFE6A12D), fontSize = 10.sp, lineHeight = 10.sp)
+                    Text("P.M", color = Color(0xFF17110E), fontSize = 13.sp, fontWeight = FontWeight.Black, lineHeight = 14.sp)
+                    Text("CANDLE", color = Color(0xFF51283B), fontSize = 6.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = 0.5.sp, lineHeight = 7.sp)
+                }
+                Box(
+                    Modifier.fillMaxHeight().width(13.dp)
+                        .align(Alignment.Center)
+                        .graphicsLayer { translationX = sweep * 25.dp.toPx(); rotationZ = 18f }
+                        .background(Brush.horizontalGradient(listOf(Color.Transparent, Color.White.copy(alpha = 0.75f), Color(0xFFB9D9E8).copy(alpha = 0.20f), Color.Transparent)))
+                )
+                Box(Modifier.fillMaxSize().clip(RoundedCornerShape(50)).background(Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.30f), Color.Transparent, Color.Black.copy(alpha = 0.05f)))))
+            }
+        }
+        Box(Modifier.fillMaxSize().padding(1.dp).clip(RoundedCornerShape(50)).background(Color.Transparent).then(Modifier))
+    }
+}
 
 @Composable
 private fun AboutScreen(themeIndex: Int, onThemeChange: (Int) -> Unit, modifier: Modifier = Modifier) {
