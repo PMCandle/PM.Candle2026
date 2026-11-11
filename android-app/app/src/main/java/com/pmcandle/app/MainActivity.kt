@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.content.Context
 import android.util.Base64
 import android.view.HapticFeedbackConstants
 import androidx.activity.ComponentActivity
@@ -53,6 +54,10 @@ private const val CATALOG_URL = "https://pmcandle.github.io/PM.Candle2026/"
 
 data class Product(val id: Int, val name: String, val category: String, val price: Int, val image: android.graphics.Bitmap?)
 data class CartLine(val product: Product, val quantity: Int)
+
+private const val INSTAGRAM_URL = "https://www.instagram.com/pm.candle2026/"
+private const val FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61577439134472"
+private const val TIKTOK_URL = "https://www.tiktok.com/@pm.candle"
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -147,6 +152,10 @@ fun PMApp() {
     var cart by remember { mutableStateOf<Map<Int, CartLine>>(emptyMap()) }
     var showCart by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableStateOf("home") }
+    val ratingPrefs = remember { context.getSharedPreferences("pm_ratings", Context.MODE_PRIVATE) }
+    var ratings by remember { mutableStateOf<Map<Int, Int>>(emptyMap()) }
+    LaunchedEffect(Unit) { ratings = products.associate { it.id to ratingPrefs.getInt(it.id.toString(), 0) }.filterValues { it > 0 } }
+    fun setRating(id: Int, value: Int) { ratingPrefs.edit().putInt(id.toString(), value).apply(); ratings = ratings + (id to value) }
 
     LaunchedEffect(Unit) {
         runCatching { loadCatalog() }
@@ -163,6 +172,10 @@ fun PMApp() {
     }
     val total = cart.values.sumOf { it.product.price * it.quantity }
     val count = cart.values.sumOf { it.quantity }
+    val discountRate = when { count >= 100 -> 0.20; count >= 30 -> 0.10; else -> 0.0 }
+    val discount = if (discountRate == 0.20) minOf((total * discountRate).toInt(), 500) else if (discountRate == 0.10) minOf((total * discountRate).toInt(), 300) else 0
+    val finalTotal = total - discount
+    val topRated = products.filter { (ratings[it.id] ?: 0) > 0 }.sortedWith(compareByDescending<Product> { ratings[it.id] ?: 0 }.thenBy { it.name }).take(5)
 
     MaterialTheme(colorScheme = lightColorScheme(primary = Brown, secondary = Gold, background = Cream, surface = Color.White)) {
         Scaffold(
@@ -184,28 +197,30 @@ fun PMApp() {
             }
         ) { padding ->
             when {
-                showCart -> CartView(cart.values.toList(), total,
-                    onPlus = { p -> tapVibration(); val old = cart[p.id]; cart = cart + (p.id to CartLine(p, (old?.quantity ?: 0) + 1)) },
-                    onMinus = { p -> tapVibration(); val old = cart[p.id]; if (old != null) cart = if (old.quantity <= 1) cart - p.id else cart + (p.id to old.copy(quantity = old.quantity - 1)) },
+                showCart -> CartView(cart.values.toList(), total, count, discount, finalTotal,
+                    onPlus = { p -> tapVibration(); val old = cart[p.id]; cart = cart + (p.id to CartLine(p, (old?.quantity ?: 0) + 10)) },
+                    onMinus = { p -> tapVibration(); val old = cart[p.id]; if (old != null) cart = if (old.quantity <= 10) cart - p.id else cart + (p.id to old.copy(quantity = old.quantity - 10)) },
                     onCheckout = {
                         val lines = cart.values.joinToString("%0A") { "${it.product.name} × ${it.quantity} = ${it.product.price * it.quantity} جنيه" }
-                        val message = "طلب جديد من تطبيق PM Candle%0A$lines%0Aالإجمالي: $total جنيه"
+                        val message = "طلب جديد من تطبيق PM Candle%0A$lines%0Aالإجمالي قبل الخصم: $total جنيه%0Aالخصم: $discount جنيه%0Aالإجمالي النهائي: $finalTotal جنيه"
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$WhatsApp?text=" + Uri.encode(message)))
                         context.startActivity(intent)
                     }, modifier = Modifier.padding(padding))
                 selectedTab == "gallery" && !showCart -> GalleryScreen(Modifier.padding(padding))
                 selectedTab == "contact" && !showCart -> ContactScreen(Modifier.padding(padding))
-                selected != null -> ProductDetails(selected!!, onBack = { selected = null }, onAdd = {
+                selected != null -> ProductDetails(selected!!, rating = ratings[selected!!.id] ?: 0, onRate = { setRating(selected!!.id, it) }, onBack = { selected = null }, onAdd = {
                     tapVibration()
                     val p = selected!!
                     val old = cart[p.id]
-                    cart = cart + (p.id to CartLine(p, (old?.quantity ?: 0) + 1))
+                    cart = cart + (p.id to CartLine(p, (old?.quantity ?: 0) + 10))
                     selected = null
                 }, modifier = Modifier.padding(padding))
                 else -> Column(Modifier.fillMaxSize().padding(padding)) {
                     Column(Modifier.padding(horizontal = 14.dp, vertical = 12.dp)) {
                         Text("أهلاً بيكي في PM Candle", color = Brown, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                         Text("شموع وتوزيعات وهدايا معمولة بحب", color = BrownLight, fontSize = 13.sp)
+                        Text("خصم يصل إلى 20% على الكميات", color = Color(0xFF9B633D), fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                        if (topRated.isNotEmpty()) { Spacer(Modifier.height(8.dp)); Text("الأعلى تقييماً ⭐", color = Brown, fontWeight = FontWeight.Bold); Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { topRated.forEach { p -> AssistChip(onClick = { selected = p }, label = { Text("${p.name.take(12)} ★${ratings[p.id] ?: 0}", fontSize = 10.sp) }) } } }
                         Spacer(Modifier.height(12.dp))
                         OutlinedTextField(value = search, onValueChange = { search = it }, modifier = Modifier.fillMaxWidth(), singleLine = true, placeholder = { Text("دوري على المنتج اللي بتحبيه") }, shape = RoundedCornerShape(14.dp))
                         Spacer(Modifier.height(10.dp))
@@ -240,11 +255,12 @@ fun PMApp() {
                                         Column(Modifier.padding(10.dp)) {
                                             Text(product.name, color = Brown, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, maxLines = 2, minLines = 2, overflow = TextOverflow.Ellipsis)
                                             Text("${product.price} جنيه", color = BrownLight, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                                            RatingStars(rating = ratings[product.id] ?: 0, onRate = { setRating(product.id, it) })
                                             Spacer(Modifier.height(6.dp))
                                             Button(onClick = {
                                                 tapVibration()
                                                 val old = cart[product.id]
-                                                cart = cart + (product.id to CartLine(product, (old?.quantity ?: 0) + 1))
+                                                cart = cart + (product.id to CartLine(product, (old?.quantity ?: 0) + 10))
                                             }, modifier = Modifier.fillMaxWidth(), contentPadding = PaddingValues(vertical = 7.dp)) { Text("أضيفي للسلة", fontSize = 12.sp) }
                                         }
                                     }
@@ -282,25 +298,28 @@ private fun ContactScreen(modifier: Modifier = Modifier) {
         Spacer(Modifier.height(22.dp))
         Button(onClick={ context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/201277604439"))) }, modifier=Modifier.fillMaxWidth()) { Text("اطلبي عبر واتساب") }
         Spacer(Modifier.height(10.dp))
-        OutlinedButton(onClick={ context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/pm.candle2026/"))) }, modifier=Modifier.fillMaxWidth()) { Text("تابعينا على Instagram") }
+        OutlinedButton(onClick={ context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(INSTAGRAM_URL))) }, modifier=Modifier.fillMaxWidth()) { Text("تابعينا على Instagram") }
+        OutlinedButton(onClick={ context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(FACEBOOK_URL))) }, modifier=Modifier.fillMaxWidth()) { Text("تابعينا على Facebook") }
+        OutlinedButton(onClick={ context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(TIKTOK_URL))) }, modifier=Modifier.fillMaxWidth()) { Text("تابعينا على TikTok") }
         OutlinedButton(onClick={ context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://pmcandle.github.io/PM.Candle2026/"))) }, modifier=Modifier.fillMaxWidth()) { Text("زيارة الموقع") }
     }
 }
 
 @Composable
-private fun ProductDetails(product: Product, onBack: () -> Unit, onAdd: () -> Unit, modifier: Modifier = Modifier) {
+private fun ProductDetails(product: Product, rating: Int, onRate: (Int) -> Unit, onBack: () -> Unit, onAdd: () -> Unit, modifier: Modifier = Modifier) {
     Column(modifier.fillMaxSize().padding(16.dp)) {
         TextButton(onClick = onBack) { Text("← رجوع") }
         if (product.image != null) Image(product.image.asImageBitmap(), product.name, Modifier.fillMaxWidth().weight(1f).clip(RoundedCornerShape(18.dp)), contentScale = ContentScale.Fit)
         Text(product.name, color = Brown, fontSize = 23.sp, fontWeight = FontWeight.Bold)
         Text("${product.price} جنيه", color = BrownLight, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        RatingStars(rating = rating, onRate = onRate)
         Spacer(Modifier.height(14.dp))
         Button(onClick = onAdd, modifier = Modifier.fillMaxWidth()) { Text("أضيفي للسلة") }
     }
 }
 
 @Composable
-private fun CartView(lines: List<CartLine>, total: Int, onPlus: (Product) -> Unit, onMinus: (Product) -> Unit, onCheckout: () -> Unit, modifier: Modifier = Modifier) {
+private fun CartView(lines: List<CartLine>, total: Int, count: Int, discount: Int, finalTotal: Int, onPlus: (Product) -> Unit, onMinus: (Product) -> Unit, onCheckout: () -> Unit, modifier: Modifier = Modifier) {
     Column(modifier.fillMaxSize().padding(16.dp)) {
         Text("سلة مشترياتك", color = Brown, fontSize = 23.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(12.dp))
@@ -315,19 +334,32 @@ private fun CartView(lines: List<CartLine>, total: Int, onPlus: (Product) -> Uni
                                 Text(line.product.name, color = Brown, fontWeight = FontWeight.Bold)
                                 Text("${line.product.price} جنيه", color = BrownLight)
                             }
-                            TextButton(onClick = { onMinus(line.product) }) { Text("−") }
+                            TextButton(onClick = { onMinus(line.product) }) { Text("−10") }
                             Text(line.quantity.toString(), color = Brown, fontWeight = FontWeight.Bold)
-                            TextButton(onClick = { onPlus(line.product) }) { Text("+") }
+                            TextButton(onClick = { onPlus(line.product) }) { Text("+10") }
                         }
                     }
                 }
             }
             HorizontalDivider()
-            Row(Modifier.fillMaxWidth().padding(vertical = 12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("الإجمالي", color = Brown, fontWeight = FontWeight.Bold)
-                Text("$total جنيه", color = Brown, fontWeight = FontWeight.ExtraBold)
-            }
-            Button(onClick = onCheckout, modifier = Modifier.fillMaxWidth()) { Text("إتمام الطلب عبر واتساب") }
+            Text("عدد القطع: $count", color = BrownLight, modifier = Modifier.padding(top = 8.dp))
+            Row(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.SpaceBetween) { Text("الإجمالي قبل الخصم", color = Brown); Text("$total جنيه", color = Brown, fontWeight = FontWeight.Bold) }
+            if (discount > 0) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("الخصم", color = Color(0xFF27834A)); Text("-$discount جنيه", color = Color(0xFF27834A), fontWeight = FontWeight.Bold) }
+            Row(Modifier.fillMaxWidth().padding(vertical = 10.dp), horizontalArrangement = Arrangement.SpaceBetween) { Text("الإجمالي النهائي", color = Brown, fontWeight = FontWeight.Bold); Text("$finalTotal جنيه", color = Brown, fontWeight = FontWeight.ExtraBold) }
+            if (count < 30) Text("الحد الأدنى لإتمام الطلب 30 قطعة. باقي ${30-count} قطعة.", color = Color(0xFFB05A35), fontSize = 13.sp, modifier = Modifier.padding(bottom = 8.dp))
+            Button(onClick = onCheckout, enabled = count >= 30, modifier = Modifier.fillMaxWidth()) { Text("إتمام الطلب عبر واتساب") }
         }
+    }
+}
+
+
+@Composable
+private fun RatingStars(rating: Int, onRate: (Int) -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        (1..5).forEach { star ->
+            Text(text = if (star <= rating) "★" else "☆", color = Color(0xFFE0A52E), fontSize = 20.sp,
+                modifier = Modifier.clickable { onRate(star) }.padding(end = 2.dp))
+        }
+        if (rating > 0) Text("($rating/5)", color = BrownLight, fontSize = 10.sp)
     }
 }
